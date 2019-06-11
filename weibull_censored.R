@@ -37,25 +37,25 @@ mle.withcensored <- function(x) {
   optim(par=c(1,1), fn=loglikelihoodWithCensored, control = list(fnscale=-1), x=x)
 }
 
-##
-## 実行例（真の故障分布を設定して，仮想的な実験データをサンプル，そのサンプルからワイブルパラメータを推定）
-##
-
-shape <- 2 # 真の故障分布（ワイブル形状パラメータ）
-scale <- 1000 # 真の故障分布（ワイブル尺度パラメータ（スケール））
-t <- 1000 # 打ち切り時間
-n <- 100 # 試験する製品数
-
-data <- gen.sample(n, t, shape, scale) # 擬似的な実験データを生成
-print(paste("# of censored items", sum(data$censored))) # 打ち切りされた製品個数
-print(paste("# of failedd items", sum(data$censored == FALSE))) # 故障した製品数
-
-print("Do not use censored data")
-result <- mle.withoutcensored(data)
-print(paste("Estimated shape parameter", result$par[1]))
-print(paste("Estimated scale parameter", result$par[2]))
-
-print("Use censored data")
-result <- mle.withcensored(data)
-print(paste("Estimated shape parameter", result$par[1]))
-print(paste("Estimated scale parameter", result$par[2]))
+# ##
+# ## 実行例（真の故障分布を設定して，仮想的な実験データをサンプル，そのサンプルからワイブルパラメータを推定）
+# ##
+# 
+# shape <- 2 # 真の故障分布（ワイブル形状パラメータ）
+# scale <- 1000 # 真の故障分布（ワイブル尺度パラメータ（スケール））
+# t <- 1000 # 打ち切り時間
+# n <- 100 # 試験する製品数
+# 
+# data <- gen.sample(n, t, shape, scale) # 擬似的な実験データを生成
+# print(paste("# of censored items", sum(data$censored))) # 打ち切りされた製品個数
+# print(paste("# of failedd items", sum(data$censored == FALSE))) # 故障した製品数
+# 
+# print("Do not use censored data")
+# result <- mle.withoutcensored(data)
+# print(paste("Estimated shape parameter", result$par[1]))
+# print(paste("Estimated scale parameter", result$par[2]))
+# 
+# print("Use censored data")
+# result <- mle.withcensored(data)
+# print(paste("Estimated shape parameter", result$par[1]))
+# print(paste("Estimated scale parameter", result$par[2]))

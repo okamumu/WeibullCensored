@@ -1,0 +1,62 @@
+---
+output: github_document
+---
+
+## 打ち切りデータからの推定例
+
+打ち切りデータを使った場合と使わない場合の推定値の違いを見てみる
+
+### 真の分布の設定
+
+本当はわからないけど，もし故障が以下のパラメータをもつワイブル分布だったらとして考える
+
+```{r param}
+shape <- 2 # 真の故障分布（ワイブル形状パラメータ）
+scale <- 1000 # 真の故障分布（ワイブル尺度パラメータ（スケール））
+```
+
+### 環境の設定
+
+信頼性試験をする環境の設定．この場合は 100 製品を試験して，それぞれ 1000 時間たっても故障しなかったら試験をやめる．
+
+```{r env}
+t <- 500 # 打ち切り時間
+n <- 100 # 試験する製品数
+```
+
+### シミュレーション
+
+関数を定義した R ファイルを読み込み
+
+```{r source}
+source("weibull_censored.R")
+```
+
+自分で決めた真の故障分布からデータの生成．第１列目は故障あるいは打ち切り時間，第２列目は第１列目が故障か打ち切りかを示すブール型の値．TRUE なら第１列は打ち切り時間．
+
+```{r sim}
+data <- gen.sample(n, t, shape, scale) # 擬似的な実験データを生成
+data
+```
+
+打ち切りされた製品個数と故障まで試験した製品の個数
+
+```{r statistics}
+print(paste("# of failedd items", sum(data$censored == FALSE))) # 故障した製品数
+print(paste("# of censored items", sum(data$censored))) # 打ち切りをした製品数
+```
+
+打ち切った時間の情報を使わない推定
+
+```{r without}
+result <- mle.withoutcensored(data)
+cat("Estimated parameters (shape, scale): ", result$par)
+```
+
+打ち切った時間の情報を使った推定
+
+```{r with}
+result <- mle.withcensored(data)
+cat("Estimated parameters (shape, scale): ", result$par)
+```
+
